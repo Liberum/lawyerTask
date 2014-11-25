@@ -1,10 +1,9 @@
 package users.controller;
 
 
-import connection.dto.Response;
-import users.dao.DBinmemory;
 import users.dto.User;
 import users.services.UserVerification;
+import connection.dto.Response;
 
 public class UserController {
 
@@ -13,7 +12,7 @@ public class UserController {
 
 	public	Response login(User user){
 	UserVerification uVerif = new UserVerification();
-	String state = uVerif.access(user);
+	String state = uVerif.login(user);
 	Response response = new Response();
 	response.setStatusLogin(state);
 	return response;
