@@ -28,20 +28,22 @@ public class UserDaoDB {
 	            System.out.println("Нет соединения с БД!");
 	            System.exit(0);
 	        }
-	        
+	        //TODO name
 	        if (existingUser != null) { 
-	        PreparedStatement ps = (PreparedStatement) conn.prepareStatement("UPDATE users SET pass = ? WHERE email = ?");
+	        PreparedStatement ps = (PreparedStatement) conn.prepareStatement("UPDATE users SET pass = ?, name = ? WHERE email = ?");
 	        ps.setString(1, user.getPassword());
-	        ps.setString(2, user.getLogin());
+	        ps.setString(3, user.getLogin());
+	        ps.setString(2, user.getName());
 	        ps.executeUpdate();
-	        System.out.println("Updated user " + user.getLogin() + " pass " + user.getPassword()); 
+	        System.out.println("Updated user: name " + user.getName() + "; login " + user.getLogin() + "; pass " + user.getPassword()); 
 	        conn.close();
 	        } else {
-		    PreparedStatement ps = (PreparedStatement) conn.prepareStatement("INSERT INTO users (email, pass) values (?,?)");
+		    PreparedStatement ps = (PreparedStatement) conn.prepareStatement("INSERT INTO users (email, pass, name) values (?,?,?)");
 		    ps.setString(1, user.getLogin());
 		    ps.setString(2, user.getPassword());
+		    ps.setString(3, user.getName());
 		    ps.executeUpdate();
-		    System.out.println("Saved user " + user.getLogin() + " pass " + user.getPassword());
+		    System.out.println("Saved user: name " + user.getName() + "; login " + user.getLogin() + "; pass " + user.getPassword());
 		    conn.close();
 	        }
 	        
@@ -73,13 +75,16 @@ public class UserDaoDB {
 	            System.exit(0);
 	        }
 	        
-	        PreparedStatement ps = (PreparedStatement) conn.prepareStatement("SELECT id, email, pass FROM users WHERE email = ?");
+	        PreparedStatement ps = (PreparedStatement) conn.prepareStatement("SELECT * FROM users WHERE email = ?");
+	        //id, email, pass, name
 	        ps.setString(1, login);
 	        ResultSet rs = ps.executeQuery();
 	        while (rs.next()) {
 	        	User user = new User();
 	        	user.setLogin(rs.getString("email"));
 	        	user.setPassword(rs.getString("pass"));
+	          	user.setName(rs.getString("name"));
+	        	user.setId(rs.getInt("id"));
 	        	System.out.println("Загружен пользователь:" + user);
 	        	return user;
 	        }
@@ -115,7 +120,9 @@ public List<User> loadAllUsers() {
 		while (rs.next()) {
 			User user = new User();
 			user.setLogin(rs.getString("email"));
-			user.setPassword(rs.getString("name"));
+			user.setPassword(rs.getString("pass"));
+			user.setName(rs.getString("name"));
+			user.setId(rs.getInt("id"));
 			res.add(user);
 		}
 		System.out.println("All users were loaded");

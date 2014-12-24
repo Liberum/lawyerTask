@@ -9,9 +9,7 @@ import users.dto.User;
 
 public class DBinmemory {
 	private Map<String, User> tempDB = new HashMap<String, User>();
-	
-	//TODO написать в юзере сервис 
-	
+		
 	public void saveUser(User user){
 		tempDB.put(user.getLogin(), user);
 		System.out.println(user + "Добавлен в базу данных");
